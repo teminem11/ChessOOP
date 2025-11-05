@@ -29,21 +29,27 @@ public class Board {
     public void movePiece(int fromX, int fromY, int toX, int toY) {
         Square fromSquare = getSquare(fromX, fromY);
         Square toSquare = getSquare(toX, toY);
-
         Piece movingPiece = fromSquare.getPiece();
 
         if (movingPiece == null) {
-            System.out.println("There is no piece on the selected square!");
+            System.out.println("No shape on the selected cell");
             return;
         }
 
-        // Move piece
+        // Adding move validity check
+        if (!movingPiece.isValidMove(this, fromX, fromY, toX, toY)) {
+            System.out.println("An illegal move for a piece " + movingPiece.getSymbol());
+            return;
+        }
+
+        // If the move is permissible, we move it.
         toSquare.setPiece(movingPiece);
         fromSquare.setPiece(null);
 
         System.out.println("Move completed: " + movingPiece.getSymbol() +
                 " (" + fromX + "," + fromY + ") → (" + toX + "," + toY + ")");
     }
+
 
 
 

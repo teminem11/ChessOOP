@@ -7,4 +7,9 @@ public class Rook extends Piece {
     public String getSymbol() {
         return getColor().equals("white") ? "R" : "r";
     }
+
+    @Override
+    public boolean isValidMove(Board board, int fromX, int fromY, int toX, int toY) {
+        return true;
+    }
 }
