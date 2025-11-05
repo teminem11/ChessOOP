@@ -1,5 +1,4 @@
-
-    public abstract class Piece {
+public abstract class Piece {
         private final String color; // "white" или "black"
 
         public Piece(String color) {
