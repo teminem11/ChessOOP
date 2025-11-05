@@ -7,11 +7,14 @@ public class Board {
                 squares[y][x] = new Square(x, y);
             }
         }
+
+        setupPieces();
     }
 
     public Square getSquare(int x, int y) {
         return squares[y][x];
     }
+
 
     public void printBoard() {
         for (int y = 7; y >= 0; y--) {
@@ -20,5 +23,36 @@ public class Board {
             }
             System.out.println();
         }
+    }
+
+
+    private void setupPieces() {
+
+        for (int x = 0; x < 8; x++) {
+            squares[1][x].setPiece(new Pawn("white"));
+        }
+
+        squares[0][0].setPiece(new Rook("white"));
+        squares[0][7].setPiece(new Rook("white"));
+        squares[0][1].setPiece(new Knight("white"));
+        squares[0][6].setPiece(new Knight("white"));
+        squares[0][2].setPiece(new Bishop("white"));
+        squares[0][5].setPiece(new Bishop("white"));
+        squares[0][3].setPiece(new Queen("white"));
+        squares[0][4].setPiece(new King("white"));
+
+
+        for (int x = 0; x < 8; x++) {
+            squares[6][x].setPiece(new Pawn("black"));
+        }
+
+        squares[7][0].setPiece(new Rook("black"));
+        squares[7][7].setPiece(new Rook("black"));
+        squares[7][1].setPiece(new Knight("black"));
+        squares[7][6].setPiece(new Knight("black"));
+        squares[7][2].setPiece(new Bishop("black"));
+        squares[7][5].setPiece(new Bishop("black"));
+        squares[7][3].setPiece(new Queen("black"));
+        squares[7][4].setPiece(new King("black"));
     }
 }
