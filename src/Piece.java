@@ -1,5 +1,5 @@
 public abstract class Piece {
-        private final String color; // "white" или "black"
+        private final String color; // "white" or "black"
 
         public Piece(String color) {
             this.color = color;

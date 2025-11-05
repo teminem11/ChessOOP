@@ -25,6 +25,27 @@ public class Board {
         }
     }
 
+    // Movement
+    public void movePiece(int fromX, int fromY, int toX, int toY) {
+        Square fromSquare = getSquare(fromX, fromY);
+        Square toSquare = getSquare(toX, toY);
+
+        Piece movingPiece = fromSquare.getPiece();
+
+        if (movingPiece == null) {
+            System.out.println("There is no piece on the selected square!");
+            return;
+        }
+
+        // Move piece
+        toSquare.setPiece(movingPiece);
+        fromSquare.setPiece(null);
+
+        System.out.println("Move completed: " + movingPiece.getSymbol() +
+                " (" + fromX + "," + fromY + ") → (" + toX + "," + toY + ")");
+    }
+
+
 
     private void setupPieces() {
 
