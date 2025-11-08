@@ -32,22 +32,36 @@ public class Board {
         Piece movingPiece = fromSquare.getPiece();
 
         if (movingPiece == null) {
-            System.out.println("No shape on the selected cell");
+            System.out.println("No piece on the selected square!");
             return;
         }
 
-        // Adding move validity check
+        Piece targetPiece = toSquare.getPiece();
+
+        // Prevent capturing your own piece
+        if (targetPiece != null && targetPiece.getColor().equals(movingPiece.getColor())) {
+            System.out.println("Invalid move: cannot capture your own piece!");
+            return;
+        }
+
+        // Validate movement rules for the specific piece
         if (!movingPiece.isValidMove(this, fromX, fromY, toX, toY)) {
-            System.out.println("An illegal move for a piece " + movingPiece.getSymbol());
+            System.out.println("Invalid move for " + movingPiece.getSymbol());
             return;
         }
 
-        // If the move is permissible, we move it.
+        // Perform the move
         toSquare.setPiece(movingPiece);
         fromSquare.setPiece(null);
 
-        System.out.println("Move completed: " + movingPiece.getSymbol() +
-                " (" + fromX + "," + fromY + ") → (" + toX + "," + toY + ")");
+        // Print message depending on whether it was a capture or simple move
+        if (targetPiece != null) {
+            System.out.println(movingPiece.getSymbol() + " captured " + targetPiece.getSymbol() +
+                    " at (" + toX + "," + toY + ")");
+        } else {
+            System.out.println("Move completed: " + movingPiece.getSymbol() +
+                    " (" + fromX + "," + fromY + ") → (" + toX + "," + toY + ")");
+        }
     }
 
 

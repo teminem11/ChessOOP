@@ -34,5 +34,15 @@ public class Main {
         board.printBoard();
 
 
+        System.out.println("\nTrying to attack your own piece:");
+        board.movePiece(3, 0, 4, 1); // White queen tries to attack a white pawn — not allowed
+        board.printBoard();
+
+        System.out.println("\nWhite pawn captures a black pawn:");
+        board.movePiece(4, 3, 3, 4); // Valid capture
+        board.printBoard();
+
+
+
     }
 }
