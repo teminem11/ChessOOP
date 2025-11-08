@@ -33,6 +33,7 @@ public class Board {
         Square toSquare = getSquare(toX, toY);
         Piece movingPiece = fromSquare.getPiece();
 
+        // No piece selected
         if (movingPiece == null) {
             System.out.println("No piece on the selected square!");
             return;
@@ -52,17 +53,17 @@ public class Board {
             return;
         }
 
-        // Validate the move according to piece rules
+        // Validate the move according to the piece's movement rules
         if (!movingPiece.isValidMove(this, fromX, fromY, toX, toY)) {
             System.out.println("Invalid move for " + movingPiece.getSymbol());
             return;
         }
 
-        // Execute the move
+        // Temporarily perform the move
         toSquare.setPiece(movingPiece);
         fromSquare.setPiece(null);
 
-        // Print result (capture or move)
+        // Print result (capture or normal move)
         if (targetPiece != null) {
             System.out.println(movingPiece.getSymbol() + " captured " + targetPiece.getSymbol() +
                     " at (" + toX + "," + toY + ")");
@@ -71,10 +72,17 @@ public class Board {
                     " (" + fromX + "," + fromY + ") → (" + toX + "," + toY + ")");
         }
 
+        // Check if opponent's king is in check (before switching turn)
+        String opponentColor = movingPiece.getColor().equals("white") ? "black" : "white";
+        if (isKingInCheck(opponentColor)) {
+            System.out.println("CHECK on " + opponentColor + " king!");
+        }
+
         // Switch turn
         currentTurn = currentTurn.equals("white") ? "black" : "white";
         System.out.println("Next turn: " + currentTurn);
     }
+
 
 
 
@@ -109,4 +117,40 @@ public class Board {
         squares[7][3].setPiece(new Queen("black"));
         squares[7][4].setPiece(new King("black"));
     }
+
+    // Check if the given color's king is under attack
+    public boolean isKingInCheck(String color) {
+        // 1️⃣ Find the king of the given color
+        int kingX = -1, kingY = -1;
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                Piece piece = squares[y][x].getPiece();
+                if (piece instanceof King && piece.getColor().equals(color)) {
+                    kingX = x;
+                    kingY = y;
+                    break;
+                }
+            }
+        }
+
+        if (kingX == -1) {
+            System.out.println("Error: King of color " + color + " not found!");
+            return false;
+        }
+
+        // 2️⃣ Check if any enemy piece can attack the king
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                Piece piece = squares[y][x].getPiece();
+                if (piece != null && !piece.getColor().equals(color)) {
+                    if (piece.isValidMove(this, x, y, kingX, kingY)) {
+                        return true; // King is under attack
+                    }
+                }
+            }
+        }
+
+        return false; // No threats found
+    }
+
 }
