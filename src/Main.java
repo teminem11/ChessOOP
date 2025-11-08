@@ -3,44 +3,14 @@ public class Main {
         Board board = new Board();
         board.printBoard();
 
-        System.out.println("\nWhite pawn go forward:");
-        board.movePiece(0, 1, 0, 3); // okay
-        board.printBoard();
+        System.out.println("\nTesting turn order:");
 
-        System.out.println("\ntry moving the pawn two more squares:");
-        board.movePiece(0, 3, 0, 5); // error
-        board.printBoard();
-
-        System.out.println("\ntry moving the white rook from a1 to a3:");
-        board.movePiece(0, 0, 0, 2); // допустимо, если путь свободен
-        board.printBoard();
-
-        System.out.println("\ntry moving the king from e1 to e2:");
-        board.movePiece(4, 0, 4, 1);
-        board.printBoard();
-
-        System.out.println("\ntry moving the knight from b1 to c3:\"");
-        board.movePiece(1, 0, 2, 2);
-        board.printBoard();
+        board.movePiece(4, 1, 4, 3); // White pawn e2 → e4 ✅
+        board.movePiece(3, 6, 3, 4); // Black pawn d7 → d5 ✅
+        board.movePiece(4, 3, 3, 4); // White pawn captures d5 ✅
+        board.movePiece(2, 6, 2, 5); // Black pawn c7 → c6 ✅
 
 
-        System.out.println("\nChecking a pawn capture:");
-        board.movePiece(4, 1, 4, 3); // White pawn e2 → e4
-        board.movePiece(3, 6, 3, 4); // black pawn d7 → d5
-        board.printBoard();
-
-        System.out.println("\nThe white pawn captures the black pawn diagonally:");
-        board.movePiece(4, 3, 3, 4); // White pawn e4 → d5 (capture)
-        board.printBoard();
-
-
-        System.out.println("\nTrying to attack your own piece:");
-        board.movePiece(3, 0, 4, 1); // White queen tries to attack a white pawn — not allowed
-        board.printBoard();
-
-        System.out.println("\nWhite pawn captures a black pawn:");
-        board.movePiece(4, 3, 3, 4); // Valid capture
-        board.printBoard();
 
 
 

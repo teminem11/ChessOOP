@@ -1,5 +1,7 @@
 public class Board {
     private final Square[][] squares = new Square[8][8];
+    private String currentTurn = "white"; // White starts first
+
 
     public Board() {
         for (int y = 0; y < 8; y++) {
@@ -36,6 +38,12 @@ public class Board {
             return;
         }
 
+        // Check if it's the correct player's turn
+        if (!movingPiece.getColor().equals(currentTurn)) {
+            System.out.println("It's not " + movingPiece.getColor() + "'s turn!");
+            return;
+        }
+
         Piece targetPiece = toSquare.getPiece();
 
         // Prevent capturing your own piece
@@ -44,17 +52,17 @@ public class Board {
             return;
         }
 
-        // Validate movement rules for the specific piece
+        // Validate the move according to piece rules
         if (!movingPiece.isValidMove(this, fromX, fromY, toX, toY)) {
             System.out.println("Invalid move for " + movingPiece.getSymbol());
             return;
         }
 
-        // Perform the move
+        // Execute the move
         toSquare.setPiece(movingPiece);
         fromSquare.setPiece(null);
 
-        // Print message depending on whether it was a capture or simple move
+        // Print result (capture or move)
         if (targetPiece != null) {
             System.out.println(movingPiece.getSymbol() + " captured " + targetPiece.getSymbol() +
                     " at (" + toX + "," + toY + ")");
@@ -62,7 +70,12 @@ public class Board {
             System.out.println("Move completed: " + movingPiece.getSymbol() +
                     " (" + fromX + "," + fromY + ") → (" + toX + "," + toY + ")");
         }
+
+        // Switch turn
+        currentTurn = currentTurn.equals("white") ? "black" : "white";
+        System.out.println("Next turn: " + currentTurn);
     }
+
 
 
 
