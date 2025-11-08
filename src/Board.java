@@ -33,13 +33,11 @@ public class Board {
         Square toSquare = getSquare(toX, toY);
         Piece movingPiece = fromSquare.getPiece();
 
-        // No piece selected
         if (movingPiece == null) {
             System.out.println("No piece on the selected square!");
             return;
         }
 
-        // Check if it's the correct player's turn
         if (!movingPiece.getColor().equals(currentTurn)) {
             System.out.println("It's not " + movingPiece.getColor() + "'s turn!");
             return;
@@ -47,23 +45,38 @@ public class Board {
 
         Piece targetPiece = toSquare.getPiece();
 
-        // Prevent capturing your own piece
         if (targetPiece != null && targetPiece.getColor().equals(movingPiece.getColor())) {
             System.out.println("Invalid move: cannot capture your own piece!");
             return;
         }
 
-        // Validate the move according to the piece's movement rules
         if (!movingPiece.isValidMove(this, fromX, fromY, toX, toY)) {
             System.out.println("Invalid move for " + movingPiece.getSymbol());
             return;
         }
 
-        // Temporarily perform the move
+        // Check if the player is currently in check
+        boolean playerIsInCheck = isKingInCheck(movingPiece.getColor());
+
+        // Temporarily make the move
         toSquare.setPiece(movingPiece);
         fromSquare.setPiece(null);
 
-        // Print result (capture or normal move)
+        // Check if this move leaves the player's king in check
+        if (isKingInCheck(movingPiece.getColor())) {
+            // Undo the move
+            fromSquare.setPiece(movingPiece);
+            toSquare.setPiece(targetPiece);
+
+            if (playerIsInCheck) {
+                System.out.println("Invalid move: your king would still be in check!");
+            } else {
+                System.out.println("Invalid move: this would leave your king in check!");
+            }
+            return;
+        }
+
+        // Move is valid
         if (targetPiece != null) {
             System.out.println(movingPiece.getSymbol() + " captured " + targetPiece.getSymbol() +
                     " at (" + toX + "," + toY + ")");
@@ -72,7 +85,7 @@ public class Board {
                     " (" + fromX + "," + fromY + ") → (" + toX + "," + toY + ")");
         }
 
-        // Check if opponent's king is in check (before switching turn)
+        // Check if opponent's king is now in check
         String opponentColor = movingPiece.getColor().equals("white") ? "black" : "white";
         if (isKingInCheck(opponentColor)) {
             System.out.println("CHECK on " + opponentColor + " king!");
@@ -82,11 +95,6 @@ public class Board {
         currentTurn = currentTurn.equals("white") ? "black" : "white";
         System.out.println("Next turn: " + currentTurn);
     }
-
-
-
-
-
 
     private void setupPieces() {
 
@@ -138,7 +146,7 @@ public class Board {
             return false;
         }
 
-        // 2️⃣ Check if any enemy piece can attack the king
+        //  Check if any enemy piece can attack the king
         for (int y = 0; y < 8; y++) {
             for (int x = 0; x < 8; x++) {
                 Piece piece = squares[y][x].getPiece();
