@@ -23,5 +23,16 @@ public class Main {
         board.movePiece(1, 0, 2, 2);
         board.printBoard();
 
+
+        System.out.println("\nChecking a pawn capture:");
+        board.movePiece(4, 1, 4, 3); // White pawn e2 → e4
+        board.movePiece(3, 6, 3, 4); // black pawn d7 → d5
+        board.printBoard();
+
+        System.out.println("\nThe white pawn captures the black pawn diagonally:");
+        board.movePiece(4, 3, 3, 4); // White pawn e4 → d5 (capture)
+        board.printBoard();
+
+
     }
 }
