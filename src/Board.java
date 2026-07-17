@@ -14,8 +14,12 @@ public class Board {
     }
 
     public Square getSquare(int x, int y) {
+        if (!isInside(x, y)) throw new IllegalArgumentException("Coordinates must be between 0 and 7");
         return squares[y][x];
     }
+
+    public String getCurrentTurn() { return currentTurn; }
+    public static boolean isInside(int x, int y) { return x >= 0 && x < 8 && y >= 0 && y < 8; }
 
 
     public void printBoard() {
@@ -28,31 +32,35 @@ public class Board {
     }
 
     // Movement
-    public void movePiece(int fromX, int fromY, int toX, int toY) {
+    public boolean movePiece(int fromX, int fromY, int toX, int toY) {
+        if (!isInside(fromX, fromY) || !isInside(toX, toY) || (fromX == toX && fromY == toY)) {
+            System.out.println("Invalid coordinates or destination!");
+            return false;
+        }
         Square fromSquare = getSquare(fromX, fromY);
         Square toSquare = getSquare(toX, toY);
         Piece movingPiece = fromSquare.getPiece();
 
         if (movingPiece == null) {
             System.out.println("No piece on the selected square!");
-            return;
+            return false;
         }
 
         if (!movingPiece.getColor().equals(currentTurn)) {
             System.out.println("It's not " + movingPiece.getColor() + "'s turn!");
-            return;
+            return false;
         }
 
         Piece targetPiece = toSquare.getPiece();
 
         if (targetPiece != null && targetPiece.getColor().equals(movingPiece.getColor())) {
             System.out.println("Invalid move: cannot capture your own piece!");
-            return;
+            return false;
         }
 
         if (!movingPiece.isValidMove(this, fromX, fromY, toX, toY)) {
             System.out.println("Invalid move for " + movingPiece.getSymbol());
-            return;
+            return false;
         }
 
         // Check if the player is currently in check
@@ -73,7 +81,13 @@ public class Board {
             } else {
                 System.out.println("Invalid move: this would leave your king in check!");
             }
-            return;
+            return false;
+        }
+
+        if (movingPiece instanceof Pawn && (toY == 0 || toY == 7)) {
+            movingPiece = new Queen(movingPiece.getColor());
+            toSquare.setPiece(movingPiece);
+            System.out.println("Pawn promoted to queen!");
         }
 
         // Move is valid
@@ -94,6 +108,27 @@ public class Board {
         // Switch turn
         currentTurn = currentTurn.equals("white") ? "black" : "white";
         System.out.println("Next turn: " + currentTurn);
+        return true;
+    }
+
+    public boolean isCheckmate(String color) { return isKingInCheck(color) && !hasLegalMove(color); }
+    public boolean isStalemate(String color) { return !isKingInCheck(color) && !hasLegalMove(color); }
+
+    public boolean hasLegalMove(String color) {
+        for (int fy = 0; fy < 8; fy++) for (int fx = 0; fx < 8; fx++) {
+            Piece moving = squares[fy][fx].getPiece();
+            if (moving == null || !moving.getColor().equals(color)) continue;
+            for (int ty = 0; ty < 8; ty++) for (int tx = 0; tx < 8; tx++) {
+                Piece target = squares[ty][tx].getPiece();
+                if ((fx == tx && fy == ty) || (target != null && target.getColor().equals(color))) continue;
+                if (!moving.isValidMove(this, fx, fy, tx, ty)) continue;
+                squares[ty][tx].setPiece(moving); squares[fy][fx].setPiece(null);
+                boolean legal = !isKingInCheck(color);
+                squares[fy][fx].setPiece(moving); squares[ty][tx].setPiece(target);
+                if (legal) return true;
+            }
+        }
+        return false;
     }
 
     private void setupPieces() {

@@ -1,27 +1,15 @@
+import java.util.Scanner;
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("\nTesting self-check prevention:");
-
-        Board board = new Board();
-
-        // e2→e4
-        board.movePiece(4, 1, 4, 3);
-        // e7→e5
-        board.movePiece(4, 6, 4, 4);
-        // f2→f3
-        board.movePiece(5, 1, 5, 2);
-        // Qd8→h4 (шах)
-        board.movePiece(3, 7, 7, 3);
-
-        // Bad move: a2→a3 (does not remove the check) — must be rejected
-        board.movePiece(0, 1, 0, 2);
-
-        // Good move: g2→g3 (blocks the diagonal) — must pass
-        board.movePiece(6, 1, 6, 2);
-
-        // Alternative: g1→f3 (also removes the check) — must pass
-        board.movePiece(6, 0, 5, 2);
-
-
-    }
+ public static void main(String[] args){
+  Board board=new Board(); System.out.println("Chess OOP — enter moves like e2 e4, or quit.");
+  try(Scanner scanner=new Scanner(System.in)){while(true){
+   board.printBoard(); String turn=board.getCurrentTurn();
+   if(board.isCheckmate(turn)){System.out.println("Checkmate! "+opposite(turn)+" wins.");break;}
+   if(board.isStalemate(turn)){System.out.println("Stalemate. Draw.");break;}
+   System.out.print(turn+"> "); if(!scanner.hasNextLine())break; String line=scanner.nextLine().trim(); if(line.equalsIgnoreCase("quit"))break;
+   String[] move=line.split("\\s+"); if(move.length!=2||!move[0].matches("[a-h][1-8]")||!move[1].matches("[a-h][1-8]")){System.out.println("Example: e2 e4");continue;}
+   board.movePiece(move[0].charAt(0)-'a',move[0].charAt(1)-'1',move[1].charAt(0)-'a',move[1].charAt(1)-'1');
+  }}
+ }
+ private static String opposite(String color){return color.equals("white")?"black":"white";}
 }
